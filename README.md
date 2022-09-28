@@ -8,6 +8,7 @@ By this deadline, your group must submit the following files on Canvas:
 
 ### Documentation
 - A detailed description of what each teammate contributed to the project.
+- - Worked collaboratively while communicating with TA to develop initial psuedocode 
 - Instructions on compiling and running your program.
 - The utility function that your program uses.
 - The evaluation function that your program uses.
