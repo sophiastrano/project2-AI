@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="./Algorithms.js"></script>
+</head>
+
+<script>
+    // Declaring Variables
+    const TEAMNAME = "Urinetown";
+    // Todo: update boards value on return from game call and from text file input
+    var boards = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0]];
+    // Todo: make boardtochange correspond to opponent's input in text file
+    var boardToPlay = 4;
+    
+    // IMPORTANT: Line to run the minimax search and print to the browser console
+    console.log(game("Urinetown", boards, boardToPlay));
+</script>
