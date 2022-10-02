@@ -114,7 +114,7 @@ function minimax(potenGlobalBoard, boardNum, depth, a, b, minMaxBool) {
                 for (var boardLoc = 0; boardLoc < 9; boardLoc++) {
                     if (computeWinOrLoss(potenGlobalBoard[minimaxCount]) === 0) {
                         if (potenGlobalBoard[minimaxCount][boardLoc] === 0) {
-                            potenGlobalBoard[minimaxCount][boardloc] = player;
+                            potenGlobalBoard[minimaxCount][boardLoc] = player;
                             minimaxEval = minimax(potenGlobalBoard, boardLoc, depth - 1, a, b, true).game_eval;
                             potenGlobalBoard[minimaxCount][boardLoc] = 0;
                         }
@@ -154,27 +154,38 @@ function minimax(potenGlobalBoard, boardNum, depth, a, b, minMaxBool) {
 function calculateLocalPosition(localBoard, boardNum) {
     localBoard[boardNum] = computerVal;
     var evaluation = 0;
+    //Prefer center over corners over edges
+
     var a = 2;
     evaluation += SCORINGSYSTEM[boardNum];
+    //Prefer creating pairs
     a = -2;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 1;
     }
+    //Take victories
     a = -3;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 5;
     }
+
+    //Block a players turn if necessary
     localBoard[boardNum] = player;
+
     a = 3;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 2;
     }
+
     localBoard[boardNum] = computerVal;
+
     evaluation -= computeWinOrLoss(localBoard) * 15;
+
     localBoard[boardNum] = 0;
+
     return evaluation;
 }
 
@@ -237,59 +248,86 @@ function realEvaluateSquare(possLocalBoard) {
 /**
  * @summary Runs the Minimax algorithm + ancillary functions
  * @param {string} playerName the name of the player
- * @param {object} smallboards the 2d array of all the small boards (the Global Board)
+ * @param {object} smallBoards the 2d array of all the small boards (the Global Board)
  * @param {number} currBoard the number of the current board to play on (0-8)
+ * @param {boolean} pyScript whether this funciton was called from pyscript
  * @returns {string} the message to write to the text file, in format "{PlayerName} {LocalBoardNumber} {SpaceNumber}"
  */
- function game(playerName, smallBoards, currBoard) {
+function game(playerName, smallBoards, currBoard, pyScript) {
+    if (pyScript) {
+        var finalBoard = Array(9).fill().map(() => Array(9).fill(0));
+        smallBoards = "" + smallBoards;
+        let boardCount = 0;
+        let numCount = 0;
+        for (let x = 0; x < smallBoards.length; x++) {
+            if (numCount >= 9) {
+                boardCount += 1;
+                numCount -= 9;
+            }
+            // checking for -1
+            if (smallBoards.substring(x, x + 1) === "-") {
+                finalBoard[boardCount][numCount] = smallBoards.substring(x, x + 2);
+                x += 1;
+                numCount += 1;
+            } else if (smallBoards.substring(x, x + 1) === "0" || smallBoards.substring(x, x + 1) === "1") { // checking for 0 or 1
+                finalBoard[boardCount][numCount] = smallBoards.substring(x, x + 1);
+                numCount += 1;
+            }
+        }
+        for (let x = 0; x < 9; x++) {
+            for (let y = 0; y < 9; y++) {
+                finalBoard[x][y] = +finalBoard[x][y];
+            }
+        }
+        smallBoards = finalBoard;
+    }
     var currentBoard = currBoard;
-    boards - smallBoards;
     topMove = -1;
     topScore = [-Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity];
     var count = 0;
-    for (let index = 0; index < boards.length; index++) {
-        if (computeWinOrLoss(boards[index]) === 0) {
-            boards[index].forEach(function (param) { param === 0 && count++ });
+    for (let index = 0; index < smallBoards.length; index++) {
+        if (computeWinOrLoss(smallBoards[index]) === 0) {
+            smallBoards[index].forEach(function (param) { param === 0 && count++ });
         }
     }
-    if (computeWinOrLoss(boards[currentBoard]) !== 0 || currentBoard === -1) {
+    if (computeWinOrLoss(smallBoards[currentBoard]) !== 0 || currentBoard === -1) {
         var cachedMiniMax;
         if (MOVES < 10) {
-            cachedMiniMax = minimax(boards, -1, Math.min(4, count), -Infinity, Infinity, true);
+            cachedMiniMax = minimax(smallBoards, -1, Math.min(4, count), -Infinity, Infinity, true);
         } else if (MOVES < 18) {
-            cachedMiniMax = minimax(boards, -1, Math.min(5, count), -Infinity, Infinity, true);
+            cachedMiniMax = minimax(smallBoards, -1, Math.min(5, count), -Infinity, Infinity, true);
         } else {
-            cachedMiniMax = minimax(boards, -1, Math.min(6, count), -Infinity, Infinity, true);
+            cachedMiniMax = minimax(smallBoards, -1, Math.min(6, count), -Infinity, Infinity, true);
         }
         currentBoard = cachedMiniMax.move;
     }
     for (let index = 0; index < 9; index++) {
-        if (boards[currentBoard][index] === 0) {
+        if (smallBoards[currentBoard][index] === 0) {
             topMove = index;
             break;
         }
     }
     if (topMove !== -1) {
         for (let index = 0; index < 9; index++) {
-            if (boards[currentBoard][index] === 0) {
-                var analysis = calculateLocalPosition(boards[currentBoard], index) * 45;
+            if (smallBoards[currentBoard][index] === 0) {
+                var analysis = calculateLocalPosition(smallBoards[currentBoard], index) * 45;
                 topScore[index] = analysis;
             }
         }
         for (let index = 0; index < 9; index++) {
-            if (computeWinOrLoss(boards[currentBoard]) === 0) {
-                if (boards[currentBoard][index] === 0) {
-                    boards[currentBoard][index] = computerVal;
+            if (computeWinOrLoss(smallBoards[currentBoard]) === 0) {
+                if (smallBoards[currentBoard][index] === 0) {
+                    smallBoards[currentBoard][index] = computerVal;
                     var cachedMiniMax;
                     if (MOVES < 20) {
-                        cachedMiniMax = minimax(boards, index, Math.min(5, count), -Infinity, Infinity, false);
+                        cachedMiniMax = minimax(smallBoards, index, Math.min(5, count), -Infinity, Infinity, false);
                     } else if (MOVES < 32) {
-                        cachedMiniMax = minimax(boards, index, Math.min(6, count), -Infinity, Infinity, false);
+                        cachedMiniMax = minimax(smallBoards, index, Math.min(6, count), -Infinity, Infinity, false);
                     } else {
-                        cachedMiniMax = minimax(boards, index, Math.min(7, count), -Infinity, Infinity, false);
+                        cachedMiniMax = minimax(smallBoards, index, Math.min(7, count), -Infinity, Infinity, false);
                     }
                     var temp = cachedMiniMax.game_eval;
-                    boards[currentBoard][index] = 0;
+                    smallBoards[currentBoard][index] = 0;
                     topScore[index] += temp;
                 }
             }
@@ -299,8 +337,8 @@ function realEvaluateSquare(possLocalBoard) {
                 topMove = index;
             }
         }
-        if (boards[currentBoard][topMove] === 0) {
-            boards[currentBoard][topMove] = computerVal;
+        if (smallBoards[currentBoard][topMove] === 0) {
+            smallBoards[currentBoard][topMove] = computerVal;
         }
     }
     return (playerName + " " + currentBoard + " " + topMove);
