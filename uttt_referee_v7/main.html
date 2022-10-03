@@ -10,13 +10,65 @@
 <py-script>
     import js
 
-    # Declaring Variables
-    # Todo: update boards value on return from game call and from text file input
-    boards = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    # Todo: make boardtochange correspond to opponent's input in text file
-    boardToPlay = 4.0
+    #program must use Urinetown in communication
+    # call js game -> pass in team name, pass in boards, pass in current board to play
+    # find go file -> see if game is over -> see that board is empty -> become first player
 
-    # Call the JS function
-    result = js.game("Urinetown", boards, boardToPlay, True)
-    print(result)
+    # Todo: update boards value on return from game call and from text file input
+    globalBoard = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0], [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+    #if .go is detected, then begin updating our total board with recent move
+
+    #make a forever loop -> do all this while game running is true, detect end_game file to set false
+
+    Running = True
+
+    while Running:
+
+        if os.path.exists("end_game"):
+            Running = False
+
+        currentLocalBoard = ""
+        mostRecentMove = ""
+        with open('move_file') as f:
+            line = f.readlines()
+            opponentMove = line.split(" ")
+            currentLocalBoard = opponentMove[1]
+            mostRecentMove = opponentMove[2]
+
+            # read text, search line for space and assign based on position
+            # set mostRecentMove = read something out of text file in pos 2
+            # set currentLocalBoard = read something out of text file in pos 1
+
+
+        #board updating function to be used to add the most recent move to our global board
+        #sep function to read in from move_file for opponent
+
+        def updateBoard(currentBoard,localBoard, newMove, whoMoved):
+            # add move to board from move file
+            #whoMoved is a boolean, opponent is false and we are true, always false then true
+            # assigns -1 for their moves and 1 for ours, already checks if board is full
+
+            # update currBoard with localBoard value and newMove value that are in move file
+
+            # localBoard = should be defined by readMoves into currentLocalBoard
+            # newMove = read something out of text file in pos 2
+            end function
+
+        #Checks for go file, starts doing stuff
+        if os.path.exists("Urinetown.go"):
+            # Adds opponent move to our board
+            globalBoard = updateBoard(globalBoard,currentLocalBoard,mostRecentMove,false)
+
+            # Calls JS function to use our AI
+            boardToPlay = currentLocalBoard
+            result = js.game("Urinetown", globalBoard, boardToPlay, True)
+            print(result)
+            ourMove = result.split(" ")
+            ourLocalBoard = ourMove[1]
+            ourRecentMove = ourMove[2]
+
+            # send result to the move_file myself (have it just return numbers)
+            globalBoard = updateBoard(globalBoard,ourLocalBoard,ourRecentMove,true)
+
 </py-script>
