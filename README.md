@@ -4,12 +4,11 @@ Project 2 for Sophia Strano, Luke Foley, &amp; Ilana Whittaker
 
 ## Initial Project Submission: Deadline: Tuesday, Oct. 4th at 9:00 pm
 
-By this deadline, your group must submit the following files on Canvas:
 
-### Documentation
 - A detailed description of what each teammate contributed to the project.
    - Worked collaboratively while communicating with TA to develop initial psuedocode 
-- Instructions on compiling and running your program.
+### To run and compile our program: 
+
 - The utility function that your program uses.
 - The evaluation function that your program uses.
 - The heuristics and/or strategies that you employed to decide how to expand nodes of the minimax tree without exceeding your time limit.
