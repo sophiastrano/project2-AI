@@ -46,9 +46,15 @@
 
         def updateBoard(currentBoard,localBoard, newMove, whoMoved):
             # add move to board from move file
+            val = 0
+            if whoMoved == false:
+                val = -1
+            if whoMoved == true:
+                val = 1
             #whoMoved is a boolean, opponent is false and we are true, always false then true
             # assigns -1 for their moves and 1 for ours, already checks if board is full
-
+            currBoard[localBoard][moveNum] = val
+            return currBoard
             # update currBoard with localBoard value and newMove value that are in move file
 
             # localBoard = should be defined by readMoves into currentLocalBoard
