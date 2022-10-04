@@ -1,3 +1,4 @@
+var fs = require('fs');
 
 // program must use Urinetown in communication
 // call js game -> pass in team name, pass in boards, pass in current board to play
@@ -20,10 +21,10 @@ var globalBoard = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0,
 function updateBoard(currentBoard, localBoard, newMove, whoMoved) {
     // add move to board from move file
     var val = 0;
-    if (whoMoved == False) {
+    if (whoMoved == false) {
         val = -1;
     }
-    if (whoMoved == True) {
+    if (whoMoved == true) {
         val = 1;
     }
     // whoMoved is a boolean, opponent is false and we are true, always false then true
@@ -38,16 +39,21 @@ function updateBoard(currentBoard, localBoard, newMove, whoMoved) {
 
 // Checks for go file, starts doing stuff
 
+function checkFileExists(file) {
+    return fs.promises.access(file, fs.constants.F_OK)
+        .then(() => true)
+        .catch(() => false)
+}
 
-var Running = True;
+var Running = true;
 
 while (Running) {
-    var endFile = new File("end_game");
-    if (endFile.exists()) {
-        Running = False;
+    var endFileExists = checkFileExists("end_game");
+    if (endFileExists) {
+        Running = false;
     }
-    while (!endFile.exists()) {
-        time.sleep(1)
+    while (!endFileExists) {
+        time.sleep(1);
     }
 
     var currentLocalBoard = "";
@@ -60,29 +66,28 @@ while (Running) {
     // board updating function to be used to add the most recent move to our global board
     // sep function to read in from move_file for opponent
 
-    if (os.path.exists(sys.argv[1] + ".go")) {
+    if (checkFileExists(process.argv[1] + ".go")) {
         // Adds opponent move to our board
-        with (open('move_file', "r") as f) {
-            if (os.path.getsize("move_file") == 0) {
-                with (open('first_four_moves', "r") as ffm) {
-                    // Read contents of first_four_moves
-                    var lineArray = ffm.readlines();
-                    // Add to updateBoard
-                    for (moveLine in lineArray) {
-                        console.log(moveLine);
-                        var opponentMove = moveLine.split(" ");
-                        var currentLocalBoard = opponentMove[1];
-                        var mostRecentMove = opponentMove[2];
-                        globalBoard = updateBoard(globalBoard, int(currentLocalBoard), int(mostRecentMove), false);
-                    }
-                }
-            } else {
-                var line = f.readline();
-                var opponentMove = line.split(" ");
+        var moveFile = fs.readFile('move_file', 'utf8', function(err, data) {console.log(data);});
+        console.log(moveFile);
+        if (moveFile.size === 0) {
+            var ffm = fs.readFile('first_four_moves', 'utf8', )
+            // Read contents of first_four_moves
+            var lineArray = ffm.readlines();
+            // Add to updateBoard
+            for (moveLine in lineArray) {
+                console.log(moveLine);
+                var opponentMove = moveLine.split(" ");
                 var currentLocalBoard = opponentMove[1];
                 var mostRecentMove = opponentMove[2];
                 globalBoard = updateBoard(globalBoard, int(currentLocalBoard), int(mostRecentMove), false);
             }
+        } else {
+            var line = f.readline();
+            var opponentMove = line.split(" ");
+            var currentLocalBoard = opponentMove[1];
+            var mostRecentMove = opponentMove[2];
+            globalBoard = updateBoard(globalBoard, int(currentLocalBoard), int(mostRecentMove), false);
         }
 
         // Calls JS function to use our AI

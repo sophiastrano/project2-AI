@@ -88,7 +88,7 @@ while Running:
 
         # Calls JS function to use our AI
         boardToPlay = currentLocalBoard
-        result = translation.game(sys.argv[1], globalBoard, boardToPlay, True)
+        result = translation.game(sys.argv[1], globalBoard, boardToPlay, False)
         print(result)
         ourMove = result.split(" ")
         ourLocalBoard = ourMove[1]

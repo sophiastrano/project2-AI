@@ -8,11 +8,11 @@ var = Scope( JS_BUILTINS )
 set_global_object(var)
 
 # Code follows:
-var.registers(['calculateLocalPosition', 'gameAnalysis', 'WINNUM', 'computeWinOrLoss', 'realEvaluateSquare', 'game', 'computerVal', 'MOVES', 'player', 'SCORINGSYSTEM', 'MOVEMULTIPLIER', 'minimax'])
+var.registers(['game', 'gameAnalysis', 'computeWinOrLoss', 'MOVEMULTIPLIER', 'minimax', 'calculateLocalPosition', 'computerVal', 'realEvaluateSquare', 'MOVES', 'SCORINGSYSTEM', 'player', 'WINNUM'])
 @Js
 def PyJsHoisted_computeWinOrLoss_(localBoard, this, arguments, var=var):
     var = Scope({'localBoard':localBoard, 'this':this, 'arguments':arguments}, var)
-    var.registers(['winVal', 'localBoard'])
+    var.registers(['localBoard', 'winVal'])
     var.put('winVal', Js(1.0))
     def PyJs_LONG_1_(var=var):
         def PyJs_LONG_0_(var=var):
@@ -35,7 +35,7 @@ var.put('computeWinOrLoss', PyJsHoisted_computeWinOrLoss_)
 @Js
 def PyJsHoisted_gameAnalysis_(tryPos, localBoardNum, this, arguments, var=var):
     var = Scope({'tryPos':tryPos, 'localBoardNum':localBoardNum, 'this':this, 'arguments':arguments}, var)
-    var.registers(['globalBoard', 'tmpEv', 'localBoardNum', 'numEval', 'count', 'tryPos'])
+    var.registers(['localBoardNum', 'count', 'numEval', 'globalBoard', 'tryPos', 'tmpEv'])
     var.put('numEval', Js(0.0))
     var.put('globalBoard', Js([]))
     #for JS loop
@@ -58,7 +58,7 @@ var.put('gameAnalysis', PyJsHoisted_gameAnalysis_)
 @Js
 def PyJsHoisted_minimax_(potenGlobalBoard, boardNum, depth, a, b, minMaxBool, this, arguments, var=var):
     var = Scope({'potenGlobalBoard':potenGlobalBoard, 'boardNum':boardNum, 'depth':depth, 'a':a, 'b':b, 'minMaxBool':minMaxBool, 'this':this, 'arguments':arguments}, var)
-    var.registers(['mMEGE', 'depth', 'maxEval', 'minimaxEval', 'minEval', 'gameEvaluation', 'minMaxBool', 'b', 'a', 'beginMove', 'boardLoc', 'minimaxCount', 'boardNum', 'potenGlobalBoard'])
+    var.registers(['minimaxCount', 'gameEvaluation', 'minMaxBool', 'boardNum', 'boardLoc', 'beginMove', 'minimaxEval', 'minEval', 'b', 'potenGlobalBoard', 'a', 'maxEval', 'depth', 'mMEGE'])
     var.put('beginMove', (-Js(1.0)))
     var.put('gameEvaluation', var.get('gameAnalysis')(var.get('potenGlobalBoard'), var.get('boardNum')))
     if ((var.get('Math').callprop('abs', var.get('gameEvaluation'))>var.get('WINNUM')) or (var.get('depth')<=Js(0.0))):
@@ -189,7 +189,7 @@ var.put('calculateLocalPosition', PyJsHoisted_calculateLocalPosition_)
 @Js
 def PyJsHoisted_realEvaluateSquare_(possLocalBoard, this, arguments, var=var):
     var = Scope({'possLocalBoard':possLocalBoard, 'this':this, 'arguments':arguments}, var)
-    var.registers(['comparison', 'evaluation', 'index', 'possLocalBoard'])
+    var.registers(['comparison', 'index', 'evaluation', 'possLocalBoard'])
     var.put('evaluation', Js(0.0))
     for PyJsTemp in var.get('possLocalBoard'):
         var.put('index', PyJsTemp)
@@ -273,7 +273,7 @@ var.put('realEvaluateSquare', PyJsHoisted_realEvaluateSquare_)
 @Js
 def PyJsHoisted_game_(playerName, smallBoards, currBoard, pyScript, this, arguments, var=var):
     var = Scope({'playerName':playerName, 'smallBoards':smallBoards, 'currBoard':currBoard, 'pyScript':pyScript, 'this':this, 'arguments':arguments}, var)
-    var.registers(['numCount', 'smallBoards', 'currBoard', 'pyScript', 'playerName', 'count', 'y', 'x', 'currentBoard', 'index', 'cachedMiniMax', 'analysis', 'finalBoard', 'boardCount', 'temp'])
+    var.registers(['temp', 'currBoard', 'numCount', 'y', 'x', 'playerName', 'count', 'boardCount', 'index', 'analysis', 'smallBoards', 'cachedMiniMax', 'pyScript', 'finalBoard', 'currentBoard'])
     if var.get('pyScript'):
         @Js
         def PyJs_anonymous_36_(this, arguments, var=var):
