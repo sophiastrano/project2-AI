@@ -59,9 +59,7 @@ while Running:
         # board updating function to be used to add the most recent move to our global board
         # sep function to read in from move_file for opponent
 
-
-
-    if os.path.exists("Urinetown.go"):
+    if os.path.exists(sys.argv[1] + ".go"):
         # Adds opponent move to our board
         print("here1")
         with open('move_file', "r") as f:
@@ -78,6 +76,7 @@ while Running:
                         mostRecentMove = opponentMove[2]
                         globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
             else:
+                print('line: .', line, '.')
                 opponentMove = line.split(" ")
                 currentLocalBoard = opponentMove[1]
                 mostRecentMove = opponentMove[2]
