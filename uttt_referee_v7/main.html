@@ -9,8 +9,13 @@
 
 <py-script>
     import js
-
-    #program must use Urinetown in communication
+    import os
+    import re
+    import time
+    from functools import partial
+    from os import listdir
+    from os.path import isfile, join
+    # program must use Urinetown in communication
     # call js game -> pass in team name, pass in boards, pass in current board to play
     # find go file -> see if game is over -> see that board is empty -> become first player
 
@@ -57,9 +62,9 @@
             return currBoard
             # update currBoard with localBoard value and newMove value that are in move file
 
+
             # localBoard = should be defined by readMoves into currentLocalBoard
             # newMove = read something out of text file in pos 2
-            end function
 
         #Checks for go file, starts doing stuff
         if os.path.exists("Urinetown.go"):
@@ -76,5 +81,13 @@
 
             # send result to the move_file myself (have it just return numbers)
             globalBoard = updateBoard(globalBoard,ourLocalBoard,ourRecentMove,true)
+
+            #Write our move to the Urinetown .go file
+
+            addOurMove = open("Urinetown.go", "w")
+            addOurMove.write(result)
+            addOurMove.close
+
+
 
 </py-script>
