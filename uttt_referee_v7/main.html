@@ -84,9 +84,11 @@
 
             #Write our move to the Urinetown .go file
 
-            addOurMove = open("Urinetown.go", "w")
-            addOurMove.write(result)
-            addOurMove.close
+            file = open('move_file', 'r+')
+            file.seek(0)
+            file.write(result) # whatever your move is...
+            file.truncate()
+            file.close()
 
 
 
