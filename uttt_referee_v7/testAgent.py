@@ -1,4 +1,5 @@
 import os
+import sys
 import js2py
 import re
 import time
@@ -66,15 +67,26 @@ while Running:
         with open('move_file', "r") as f:
             line = f.readline()
             print(".", line, ".")
-            opponentMove = line.split(" ")
-            currentLocalBoard = opponentMove[1]
-            mostRecentMove = opponentMove[2]
+            if line == "  ":
+                with open('first_four_moves', "r") as ffm:
+                    # Read contents of first_four_moves
+                    lineArray = ffm.readLines()
+                    # Add to updateBoard
+                    for index in lineArray:
+                        opponentMove = line.split(" ")
+                        currentLocalBoard = opponentMove[1]
+                        mostRecentMove = opponentMove[2]
+                        globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
+            else:
+                opponentMove = line.split(" ")
+                currentLocalBoard = opponentMove[1]
+                mostRecentMove = opponentMove[2]
         print("here")
         globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
 
         # Calls JS function to use our AI
         boardToPlay = currentLocalBoard
-        result = testAgent.game("Urinetown", globalBoard, boardToPlay, True)
+        result = testAgent.game(sys.argv[1], globalBoard, boardToPlay, True)
         print(result)
         ourMove = result.split(" ")
         ourLocalBoard = ourMove[1]
