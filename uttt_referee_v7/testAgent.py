@@ -21,6 +21,25 @@ globalBoard = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 
 
 # make a forever loop -> do all this while game running is true, detect end_game file to set false
 
+def updateBoard(currentBoard, localBoard, newMove, whoMoved):
+    # add move to board from move file
+    val = 0
+    if whoMoved == False:
+        val = -1
+    if whoMoved == True:
+        val = 1
+        # whoMoved is a boolean, opponent is false and we are true, always false then true
+        # assigns -1 for their moves and 1 for ours, already checks if board is full
+    currentBoard[localBoard][newMove] = val
+    return currentBoard
+    # update currBoard with localBoard value and newMove value that are in move file
+
+    # localBoard = should be defined by readMoves into currentLocalBoard
+    # newMove = read something out of text file in pos 2
+
+    # Checks for go file, starts doing stuff
+
+
 Running = True
 
 while Running:
@@ -29,12 +48,6 @@ while Running:
 
     currentLocalBoard = ""
     mostRecentMove = ""
-    with open('move_file', "r") as f:
-        line = f.readlines()
-        print(line)
-        opponentMove = line.split(" ")
-        currentLocalBoard = opponentMove[1]
-        mostRecentMove = opponentMove[2]
 
         # read text, search line for space and assign based on position
         # set mostRecentMove = read something out of text file in pos 2
@@ -44,27 +57,17 @@ while Running:
         # sep function to read in from move_file for opponent
 
 
-    def updateBoard(currentBoard, localBoard, newMove, whoMoved):
-        # add move to board from move file
-        val = 0
-        if whoMoved == False:
-            val = -1
-        if whoMoved == True:
-            val = 1
-            # whoMoved is a boolean, opponent is false and we are true, always false then true
-            # assigns -1 for their moves and 1 for ours, already checks if board is full
-        currentBoard[localBoard][newMove] = val
-        return currentBoard
-        # update currBoard with localBoard value and newMove value that are in move file
-
-        # localBoard = should be defined by readMoves into currentLocalBoard
-        # newMove = read something out of text file in pos 2
-
-        # Checks for go file, starts doing stuff
-
 
     if os.path.exists("Urinetown.go"):
         # Adds opponent move to our board
+        print("here1")
+        with open('move_file', "r") as f:
+            line = f.readline()
+            print(".", line, ".")
+            opponentMove = line.split(" ")
+            currentLocalBoard = opponentMove[1]
+            mostRecentMove = opponentMove[2]
+        print("here")
         globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
 
         # Calls JS function to use our AI
