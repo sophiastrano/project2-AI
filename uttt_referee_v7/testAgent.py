@@ -45,6 +45,8 @@ Running = True
 while Running:
     if os.path.exists("end_game"):
         Running = False
+    while not os.path.exists("first_four_moves"):
+        time.sleep(1)
 
     currentLocalBoard = ""
     mostRecentMove = ""
