@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <script type="text/javascript" src="./getMove.js"></script>
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-</head>
-
-<py-script>
 import js
 import os
 import re
@@ -92,4 +82,3 @@ while Running:
         file.write(result)  # whatever your move is...
         file.truncate()
         file.close()
-</py-script>
