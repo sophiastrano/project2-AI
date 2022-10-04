@@ -12,6 +12,12 @@ from os.path import isfile, join
 # find go file -> see if game is over -> see that board is empty -> become first player
 eval_res, testAgent = js2py.run_file("getMove.js")
 
+js2py.translate_file("getMove.js", "translation.py")
+from translation import *
+
+# thing1, thing2 = js2py.run_file("getMove.js")
+# toPrint = thing2.hello()
+# print(toPrint)
 
 # To do: update boards value on return from game call and from text file input
 globalBoard = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -82,7 +88,7 @@ while Running:
 
         # Calls JS function to use our AI
         boardToPlay = currentLocalBoard
-        result = testAgent.game(sys.argv[1], globalBoard, boardToPlay, True)
+        result = translation.game(sys.argv[1], globalBoard, boardToPlay, True)
         print(result)
         ourMove = result.split(" ")
         ourLocalBoard = ourMove[1]
