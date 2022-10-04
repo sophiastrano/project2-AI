@@ -61,27 +61,24 @@ while Running:
 
     if os.path.exists(sys.argv[1] + ".go"):
         # Adds opponent move to our board
-        print("here1")
         with open('move_file', "r") as f:
-            line = f.readline()
-            print(".", line, ".")
-            if line == "  ":
+            if os.path.getsize("move_file") == 0:
                 with open('first_four_moves', "r") as ffm:
                     # Read contents of first_four_moves
-                    lineArray = ffm.readLines()
+                    lineArray = ffm.readlines()
                     # Add to updateBoard
-                    for index in lineArray:
-                        opponentMove = line.split(" ")
+                    for moveLine in lineArray:
+                        print(moveLine)
+                        opponentMove = moveLine.split(" ")
                         currentLocalBoard = opponentMove[1]
                         mostRecentMove = opponentMove[2]
-                        globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
+                        globalBoard = updateBoard(globalBoard, int(currentLocalBoard), int(mostRecentMove), False)
             else:
-                print('line: .', line, '.')
+                line = f.readline()
                 opponentMove = line.split(" ")
                 currentLocalBoard = opponentMove[1]
                 mostRecentMove = opponentMove[2]
-        print("here")
-        globalBoard = updateBoard(globalBoard, currentLocalBoard, mostRecentMove, False)
+        globalBoard = updateBoard(globalBoard, int(currentLocalBoard), int(mostRecentMove), False)
 
         # Calls JS function to use our AI
         boardToPlay = currentLocalBoard
