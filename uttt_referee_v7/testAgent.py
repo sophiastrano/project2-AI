@@ -1,7 +1,5 @@
-import js
 import os
 import js2py
-from temp import *
 import re
 import time
 from functools import partial

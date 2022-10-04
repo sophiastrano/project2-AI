@@ -255,7 +255,7 @@ function realEvaluateSquare(possLocalBoard) {
  */
 function game(playerName, smallBoards, currBoard, pyScript) {
     if (pyScript) {
-        var finalBoard = Array(9).fill().map(() => Array(9).fill(0));
+        var finalBoard = Array(9).fill().map(function () { Array(9).fill(0) });
         smallBoards = "" + smallBoards;
         let boardCount = 0;
         let numCount = 0;
