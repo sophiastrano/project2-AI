@@ -1,5 +1,7 @@
 import js
 import os
+import js2py
+from temp import *
 import re
 import time
 from functools import partial
@@ -9,8 +11,10 @@ from os.path import isfile, join
 # program must use Urinetown in communication
 # call js game -> pass in team name, pass in boards, pass in current board to play
 # find go file -> see if game is over -> see that board is empty -> become first player
+eval_res, testAgent = js2py.run_file("getMove.js")
 
-# Todo: update boards value on return from game call and from text file input
+
+# To do: update boards value on return from game call and from text file input
 globalBoard = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]
@@ -66,7 +70,7 @@ while Running:
 
         # Calls JS function to use our AI
         boardToPlay = currentLocalBoard
-        result = js.game("Urinetown", globalBoard, boardToPlay, True)
+        result = testAgent.game("Urinetown", globalBoard, boardToPlay, True)
         print(result)
         ourMove = result.split(" ")
         ourLocalBoard = ourMove[1]
