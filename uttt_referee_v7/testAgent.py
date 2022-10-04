@@ -29,8 +29,9 @@ while Running:
 
     currentLocalBoard = ""
     mostRecentMove = ""
-    with open('move_file') as f:
+    with open('move_file', "r") as f:
         line = f.readlines()
+        print(line)
         opponentMove = line.split(" ")
         currentLocalBoard = opponentMove[1]
         mostRecentMove = opponentMove[2]
@@ -79,7 +80,7 @@ while Running:
 
         # Write our move to the Urinetown .go file
 
-        file = open('move_file', 'r+')
+        file = open('move_file', "r")
         file.seek(0)
         file.write(result)  # whatever your move is...
         file.truncate()
