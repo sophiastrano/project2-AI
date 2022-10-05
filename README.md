@@ -2,7 +2,7 @@
 ## Ultimate Tic-Tac-Toe
 Project 2 for Sophia Strano, Luke Foley, &amp; Ilana Whittaker
 
-## Initial Project Submission: Deadline: Tuesday, Oct. 4th at 9:00 pm
+## Initial Project Submission
 
 ### To run and compile our program: 
 
@@ -19,8 +19,7 @@ and in the third and final terminal:
 ### Designing our Agent
 
 - A detailed description of what each teammate contributed to the project.
-   - Worked collaboratively while communicating with TA to develop initial psuedocode 
-   The team worked both synchronously and asynchronously to complete the UTTT project in its entirety. Luke focused a lot of effort into developing minimax inside of the getMoves.js file. 
+   - The team worked both synchronously and asynchronously to complete the UTTT project in its entirety while communicating with TA to develop initial psuedocode as a group. Luke focused a lot of effort into developing minimax inside of the getMoves.js file. Sophie began implementing python within html to develop the functions our agent would use to maintain track of the global board, as well as read and write to and from the move_file after the algorithm is accessed. The team faced huge setbacks due to a massive struggle to merge the work that had been done in python with the work that had been done in JavaScript- 
 
 - The utility function that your program uses.
 - The evaluation function that your program uses.
