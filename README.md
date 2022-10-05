@@ -3,7 +3,7 @@
 Project 2 for Sophia Strano, Luke Foley, &amp; Ilana Whittaker
 
 ## Initial Project Submission
-woohoo yeh
+
 
 ### To run and compile our program: 
 
@@ -23,9 +23,9 @@ and in the third and final terminal:
    - The team worked both synchronously and asynchronously to complete the UTTT project in its entirety while communicating with TA to develop initial psuedocode as a group. Luke focused a lot of effort into developing minimax inside of the getMoves.js file. Sophie began implementing python within html to develop the functions our agent would use to maintain track of the global board, as well as read and write to and from the move_file after the algorithm is accessed. The team faced huge setbacks due to a massive struggle to merge the work that had been done in python with the work that had been done in JavaScript with the work that had been done in python- multiple libraries like js2py and bond were explored in an attempt to resolve this, but despite thorough review of documentation and a variety of scrapped interfacing the team eventually decided to move forward by translating all of the python code we had written to make use of our agent into javaScript so that it would more seamlessly. 
 
 - Our Utility Function
-   - The utility function that our program uses
+   - The utility function(s) of our program that maintain and update the current state of the global board game while passing that information to the evaluation portion of our agent is largely contained in the testAgent.js file. The function updateBoard is used repeatedly by our agent to first read from the move_file and split the line into two strings containing the most recently used local board and move made, filling in our globalBoard array.
 - Our Evaluation Function
-   - The evaluation function that our program uses
+   - The evaluation function that our program uses is largely contained within the getMove.js file, and is called by the utility functions in our testAgent file after each previous move is read in. The function "game" is the primary evaluator within getMoves.js, making use of the minimax and huerisitc functions that are later described
 - The heuristics and/or strategies that you employed to decide how to expand nodes of the minimax tree without exceeding your time limit.
    - ghgfjsjfasda;
 ### Results and Testing
