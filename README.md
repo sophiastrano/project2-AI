@@ -27,7 +27,11 @@ and in the third and final terminal:
 - Our Evaluation Function
    - The evaluation function that our program uses
 - The heuristics and/or strategies that you employed to decide how to expand nodes of the minimax tree without exceeding your time limit.
-   - ghgfjsjfasda;
+   - The heuristic functions are computeWinOrLoss, gameAnalysis, calculateLocalPosition, and realEvaluateSquare.
+      - computeWinOrLoss takes in the local board as its only parameter and returns a number. This function returns a 1 or a -1 if a specific player has won, or returns 0 if there is no winner yet.
+      - gameAnalysis takes in tryPos, which is an object that represents the possible state of the board. It also takes in the localBoardNum, which is the cell number of the current board in play.  It returns an integer (-1, 0, or 1) to represent if someone has lost, tied, or won.
+      - calculateLocalPosition takes in 2 parameters, those being localBoard, and boardNum.  This is an array of the board in play and the number cell of that board.  The function uses a scoring system to decide how "good" a move is.  This is scored on a scale of 0.0 to 1.0.  This number is returned.
+      - realEvaluateSquare evaluates the small board in its current state.  It takes in 1 parameter, that being possLocalBoard, which is an array of the possible board positions.  This function again returns a number on a scale from 0.0 to 1.0, ranked on how good a possible move is.
 ### Results and Testing
 - Testing our Agent
    - To test our Agent, we attempted to have the Agent play against itself and human players, but we consistently ran into a series of errors causing our agent to choose an invalid move. Our program successfully begins to evaluate these moves, but sometimes struggled with the format moves were read in and out of the program with.
