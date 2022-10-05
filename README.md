@@ -35,8 +35,8 @@ and in the third and final terminal:
 ### Results and Testing
 - Testing our Agent
    - To test our Agent, we attempted to have the Agent play against itself and human players, but we consistently ran into a series of errors causing our agent to choose an invalid move. Our program successfully begins to evaluate these moves, but sometimes struggled with the format moves were read in and out of the program with.
--  Strengths and the weaknesses of your program.
-   -  One aspect of our program that contributes positively to its functionality is 
+-  Strengths and Weaknesses
+   -  One aspect of our program that contributes positively to its functionality would be the heuristic functions used to evaluate which spaces are most advantageous based on not only availability and pure winability, but also the position of each available space as the middle and corner spaces are more highly sought after. The glaring weakness our program has is the use of javaScript making it difficult to debug errors related to our utility function and the referee. 
 - A discussion of why the evaluation function and the heuristic(s) you picked are good choices.
    - they are
 
