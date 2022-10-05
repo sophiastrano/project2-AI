@@ -27,10 +27,14 @@ and in the third and final terminal:
 - Our Evaluation Function
    - The evaluation function that our program uses
 - The heuristics and/or strategies that you employed to decide how to expand nodes of the minimax tree without exceeding your time limit.
-### Results
-- describe which tests you ran to try out your program. Did your program play against human players? Did your program play against itself? Did your program play against other programs? How did your program do during those games?
+   - ghgfjsjfasda;
+### Results and Testing
+- Testing our Agent
+   - To test our Agent, we attempted to have the Agent play against itself and human players, but we consistently ran into a series of errors causing our agent to choose an invalid move. Our program successfully begins to evaluate these moves, but sometimes struggled with the format moves were read in and out of the program with.
 -  Strengths and the weaknesses of your program.
+   -  they are
 - A discussion of why the evaluation function and the heuristic(s) you picked are good choices.
+   - they are
 
 ### Code.  
 - The source code for your program
