@@ -18,11 +18,13 @@ and in the third and final terminal:
    - python referee.py Urinetown1 Urinetown2
 ### Designing our Agent
 
-- A detailed description of what each teammate contributed to the project.
-   - The team worked both synchronously and asynchronously to complete the UTTT project in its entirety while communicating with TA to develop initial psuedocode as a group. Luke focused a lot of effort into developing minimax inside of the getMoves.js file. Sophie began implementing python within html to develop the functions our agent would use to maintain track of the global board, as well as read and write to and from the move_file after the algorithm is accessed. The team faced huge setbacks due to a massive struggle to merge the work that had been done in python with the work that had been done in JavaScript- 
+- Contributions to Development
+   - The team worked both synchronously and asynchronously to complete the UTTT project in its entirety while communicating with TA to develop initial psuedocode as a group. Luke focused a lot of effort into developing minimax inside of the getMoves.js file. Sophie began implementing python within html to develop the functions our agent would use to maintain track of the global board, as well as read and write to and from the move_file after the algorithm is accessed. The team faced huge setbacks due to a massive struggle to merge the work that had been done in python with the work that had been done in JavaScript with the work that had been done in python- multiple libraries like js2py and bond were explored in an attempt to resolve this, but despite thorough review of documentation and a variety of scrapped interfacing the team eventually decided to move forward by translating all of the python code we had written to make use of our agent into javaScript so that it would more seamlessly. 
 
-- The utility function that your program uses.
-- The evaluation function that your program uses.
+- Our Utility Function
+   - The utility function that our program uses
+- Our Evaluation Function
+   - The evaluation function that our program uses
 - The heuristics and/or strategies that you employed to decide how to expand nodes of the minimax tree without exceeding your time limit.
 ### Results
 - describe which tests you ran to try out your program. Did your program play against human players? Did your program play against itself? Did your program play against other programs? How did your program do during those games?
