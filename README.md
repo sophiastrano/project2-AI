@@ -7,15 +7,15 @@ Project 2 for Sophia Strano, Luke Foley, &amp; Ilana Whittaker
 ### To run and compile our program: 
 
 Our "Urinetown" agent uses a javaScript file, "getMoves.js" to calculate its next move. To have our Agent play against itself, please call:
-   - python testAgent.py Urinetown1
+   - node testAgent.js Urinetown1
    
 in one terminal, 
-   - python testAgent.py Urinetown2
+   - node testAgent.js Urinetown2
    
 in another terminal (though other names should work),
 
 and in the third and final terminal: 
-   - python referee Urinetown1 Urinetown2
+   - python referee.py Urinetown1 Urinetown2
 ### Designing our Agent
 
 - A detailed description of what each teammate contributed to the project.
