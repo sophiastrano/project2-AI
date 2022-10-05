@@ -55,6 +55,7 @@ def external_player(moves, main_board, local_board_num, my_symbol, opponent_symb
             check_time += check_incr
 
     if modified:
+        time.sleep(.5)
         with open("move_file", "r") as fp:
             # Get last non-empty line from file
             line = ""

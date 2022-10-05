@@ -54,20 +54,33 @@ function checkFileExists(file) {
         .then(() => true)
         .catch(() => false)
 }
+async function writeFile(result) {
+    fs.writeFile('move_file', result, (err) => {
+        // In case of a error throw err.
+        if (err) throw err;
+    })
+    await sleep(1000);
+}
+
+async function checkIfEndGameExists () {
+    var endFileExists = await checkFileExists("end_game");
+    if (endFileExists) {
+        console.log("EOF :" + endFileExists);
+        console.log("EOF EXISTS");
+        Running = false;
+    }
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 var Running = true;
 
 while (Running) {
-    var endFileExists = checkFileExists("end_game");
-    if (endFileExists) {
-        Running = false;
-    }
-    while (!endFileExists) {
-        time.sleep(1);
-    }
+    checkIfEndGameExists();
 
     var currentLocalBoard = "";
     var mostRecentMove = "";
+    var firstFourMoves = false;
 
     // read text, search line for space and assign based on position
     // set mostRecentMove = read something out of text file in pos 2
@@ -76,31 +89,37 @@ while (Running) {
     // board updating function to be used to add the most recent move to our global board
     // sep function to read in from move_file for opponent
 
-    if (checkFileExists(process.argv[1] + ".go")) {
-        // Adds opponent move to our board
-        var moveFile = fs.readFileSync('./move_file', { encoding: 'utf8', flag: 'r' });
-        if (moveFile.length === 0) {
-            var ffm = fs.readFileSync('first_four_moves', { encoding: 'utf8', flag: 'r' });
-            // Read contents of first_four_moves
-            var lineArray = ffm.split(os.EOL);
-            // Add to updateBoard
-            for (var x = 0; x < 4; x++) {
-                var opponentMove = lineArray[x].split(" ");
-                var currentLocalBoard = opponentMove[1];
-                var mostRecentMove = opponentMove[2];
-                globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), false);
+    if (!firstFourMoves && checkFileExists('first_four_moves')) {
+        var ffm = fs.readFileSync('first_four_moves', { encoding: 'utf8', flag: 'r' });
+        // Read contents of first_four_moves
+        var lineArray = ffm.split(os.EOL);
+        // Add to updateBoard
+        for (var x = 0; x < 4; x++) {
+            var player = true;
+            var opponentMove = lineArray[x].split(" ");
+            if (process.argv[2] !== opponentMove[0]) {
+                player = false;
             }
-        } else {
-            var opponentMove = moveFile.split(" ");
-            var currentLocalBoard = opponentMove[opponentMove.length - 2];
-            var mostRecentMove = opponentMove[opponentMove.length - 1];
-            console.log("OLD MOVE: " + currentLocalBoard + " " + mostRecentMove)
-            globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), false);
+            var currentLocalBoard = opponentMove[1];
+            var mostRecentMove = opponentMove[2];
+            globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), player);
         }
+        firstFourMoves = true;
+    }
+    else if (firstFourMoves && process.argv[2] + ".go") {
+        // Adds opponent move to our board
+        var moveFile = fs.readFileSync('./move_file', {
+            encoding: 'utf8', flag: 'r'
+        });
+        var opponentMove = moveFile.split(" ");
+        var currentLocalBoard = opponentMove[opponentMove.length - 2];
+        var mostRecentMove = opponentMove[opponentMove.length - 1];
+        globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), false);
 
         // Calls JS function to use our AI
         var boardToPlay = mostRecentMove;
-        var result = game(process.argv[1], globalBoard, boardToPlay, false);
+        console.log("HERE: " + globalBoard);
+        var result = game(process.argv[2], globalBoard, boardToPlay, false);
         var ourLocalBoard = result.substring(result.length - 3, result.length - 2);
         var ourRecentMove = result.substring(result.length - 1, result.length);
         // send result to the move_file myself (have it just return numbers)
@@ -114,10 +133,7 @@ while (Running) {
         //file.write(result);  // whatever your move is...
         //file.truncate();
         //file.close();
-        fs.writeFile('move_file', result, (err) => {
-            // In case of a error throw err.
-            if (err) throw err;
-        })
+        writeFile(result);
     }
 }
 
@@ -268,38 +284,27 @@ function minimax(potenGlobalBoard, boardNum, depth, a, b, minMaxBool) {
 function calculateLocalPosition(localBoard, boardNum) {
     localBoard[boardNum] = computerVal;
     var evaluation = 0;
-    //Prefer center over corners over edges
-
     var a = 2;
     evaluation += SCORINGSYSTEM[boardNum];
-    //Prefer creating pairs
     a = -2;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 1;
     }
-    //Take victories
     a = -3;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 5;
     }
-
-    //Block a players turn if necessary
     localBoard[boardNum] = player;
-
     a = 3;
     if (localBoard[0] + localBoard[1] + localBoard[2] === a || localBoard[3] + localBoard[4] + localBoard[5] === a || localBoard[6] + localBoard[7] + localBoard[8] === a || localBoard[0] + localBoard[3] + localBoard[6] === a || localBoard[1] + localBoard[4] + localBoard[7] === a ||
         localBoard[2] + localBoard[5] + localBoard[8] === a || localBoard[0] + localBoard[4] + localBoard[8] === a || localBoard[2] + localBoard[4] + localBoard[6] === a) {
         evaluation += 2;
     }
-
     localBoard[boardNum] = computerVal;
-
     evaluation -= computeWinOrLoss(localBoard) * 15;
-
     localBoard[boardNum] = 0;
-
     return evaluation;
 }
 
@@ -378,7 +383,6 @@ function game(playerName, smallBoards, currBoard, pyScript) {
                 boardCount += 1;
                 numCount -= 9;
             }
-            // checking for -1
             if (smallBoards.substring(x, x + 1) === "-") {
                 finalBoard[boardCount][numCount] = smallBoards.substring(x, x + 2);
                 x += 1;
