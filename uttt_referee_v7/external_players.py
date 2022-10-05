@@ -72,8 +72,7 @@ def external_player(moves, main_board, local_board_num, my_symbol, opponent_symb
                 global_board = int(tokens[1])
                 local_board = int(tokens[2])
             except:
-                return BAD_MOVE_I_LOST, f'Invalid move!'
-
+                return BAD_MOVE_I_LOST, f'Error processing move'
 
             # Verify that move is from expected player
             if group_name != name:
@@ -89,10 +88,3 @@ def external_player(moves, main_board, local_board_num, my_symbol, opponent_symb
         return BAD_MOVE_I_LOST, f'Time out!'
 
     return g
-
-
-
-
-
-
-

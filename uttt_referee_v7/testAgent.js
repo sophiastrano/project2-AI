@@ -92,17 +92,19 @@ while (Running) {
             }
         } else {
             var opponentMove = moveFile.split(" ");
-            var currentLocalBoard = opponentMove[opponentMove.length-1];
-            var currentLocalBoard = opponentMove[opponentMove.length-1];
+            var currentLocalBoard = opponentMove[opponentMove.length - 2];
+            var mostRecentMove = opponentMove[opponentMove.length - 1];
+            console.log("OLD MOVE: " + currentLocalBoard + " " + mostRecentMove)
             globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), false);
         }
 
         // Calls JS function to use our AI
-        var boardToPlay = currentLocalBoard;
+        var boardToPlay = mostRecentMove;
         var result = game(process.argv[1], globalBoard, boardToPlay, false);
         var ourLocalBoard = result.substring(result.length - 3, result.length - 2);
-        var ourRecentMove = result.substring(result.length, result.length);
+        var ourRecentMove = result.substring(result.length - 1, result.length);
         // send result to the move_file myself (have it just return numbers)
+        console.log("MOVE: " + ourLocalBoard + "  " + ourRecentMove)
         globalBoard = updateBoard(globalBoard, ourLocalBoard, ourRecentMove, true);
 
         // Write our move to the Urinetown .go file
