@@ -1,33 +1,31 @@
 var fs = require('fs');
 var os = require('os');
 
-var player = 1;
-var computerVal = -1;
-var MOVES = 0;
-
 // CONSTANTS
 const MOVEMULTIPLIER = [1.4, 1, 1.4, 1, 1.75, 1, 1.4, 1, 1.4];
 const WINNUM = 5000;
 const SCORINGSYSTEM = [0.2, 0.17, 0.2, 0.17, 0.22, 0.17, 0.2, 0.17, 0.2];
 
-// program must use Urinetown in communication
-// call js game -> pass in team name, pass in boards, pass in current board to play
-// find go file -> see if game is over -> see that board is empty -> become first player
-
-
-// thing1, thing2 = js2py.run_file("getMove.js")
-// toPrint = thing2.hello()
-// print(toPrint)
-
-// To do: update boards value on return from game call and from text file input
+// TO BE UPDATED
+var Running = true;
+var firstFourMoves = false;
+var mRM = 0;
 var globalBoard = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]];
+var mainBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+var player = 1;
+var computerVal = -1;
+var MOVES = 0;
 
-// if .go is detected, then begin updating our total board with recent move
-
-// make a forever loop -> do all this while game running is true, detect end_game file to set false
-
+/**
+ * @summary Updates the stored board with a new move
+ * @param {object} currentBoard the current global board
+ * @param {number} localBoard the local board for the new move
+ * @param {number} newMove the number space for the new move (0-8)
+ * @param {boolean} whoMoved which player made this move
+ * @returns {object} the updated board
+ */
 function updateBoard(currentBoard, localBoard, newMove, whoMoved) {
     // add move to board from move file
     var val = 0;
@@ -42,98 +40,88 @@ function updateBoard(currentBoard, localBoard, newMove, whoMoved) {
     currentBoard[localBoard][newMove] = val;
     return currentBoard;
 }
-// update currBoard with localBoard value and newMove value that are in move file
 
-// localBoard = should be defined by readMoves into currentLocalBoard
-// newMove = read something out of text file in pos 2
-
-// Checks for go file, starts doing stuff
-
+/**
+ * @summary Checks if the file exists
+ * @param {object} file the file to be checked
+ * @returns {boolean} whether the file exists
+ */
 function checkFileExists(file) {
     return fs.promises.access(file, fs.constants.F_OK)
         .then(() => true)
         .catch(() => false)
 }
+
+/**
+ * @summary Writes to move_file
+ * @param {string} result the string to write to move_file
+ */
 async function writeFile(result) {
     fs.writeFile('move_file', result, (err) => {
         // In case of a error throw err.
         if (err) throw err;
     })
-    await sleep(1000);
 }
 
-async function checkIfEndGameExists () {
+/**
+ * @summary Checks if it is the end of the game
+ * @returns {boolean} whether the game has ended
+ */
+async function checkIfEndGameExists() {
     var endFileExists = await checkFileExists("end_game");
     if (endFileExists) {
-        console.log("EOF :" + endFileExists);
-        console.log("EOF EXISTS");
         Running = false;
     }
 }
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+/**
+ * @summary Plays the game - manages the helper functions - communicates with the referee
+ */
+async function play() {
+    while (Running) {
+        checkIfEndGameExists();
 
-var Running = true;
+        var currentLocalBoard = "";
+        var mostRecentMove = "";
 
-while (Running) {
-    checkIfEndGameExists();
-
-    var currentLocalBoard = "";
-    var mostRecentMove = "";
-    var firstFourMoves = false;
-
-    // read text, search line for space and assign based on position
-    // set mostRecentMove = read something out of text file in pos 2
-    // set currentLocalBoard = read something out of text file in pos 1
-
-    // board updating function to be used to add the most recent move to our global board
-    // sep function to read in from move_file for opponent
-
-    if (!firstFourMoves && checkFileExists('first_four_moves')) {
-        var ffm = fs.readFileSync('first_four_moves', { encoding: 'utf8', flag: 'r' });
-        // Read contents of first_four_moves
-        var lineArray = ffm.split(os.EOL);
-        // Add to updateBoard
-        for (var x = 0; x < 4; x++) {
-            var player = true;
-            var opponentMove = lineArray[x].split(" ");
-            if (process.argv[2] !== opponentMove[0]) {
-                player = false;
+        if (!firstFourMoves && await checkFileExists('first_four_moves')) {
+            var ffm = fs.readFileSync('first_four_moves', { encoding: 'utf8', flag: 'r' });
+            var lineArray = ffm.split(os.EOL);
+            for (var x = 0; x < 4; x++) {
+                var player = true;
+                var opponentMove = lineArray[x].split(" ");
+                if (process.argv[2] !== opponentMove[0]) {
+                    player = false;
+                }
+                var currentLocalBoard = opponentMove[1];
+                var mostRecentMove = opponentMove[2];
+                globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), !player);
             }
-            var currentLocalBoard = opponentMove[1];
-            var mostRecentMove = opponentMove[2];
-            globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), player);
+            firstFourMoves = true;
+            mRM = parseInt(mostRecentMove);
         }
-        firstFourMoves = true;
-    }
-    else if (firstFourMoves && process.argv[2] + ".go") {
-        // Adds opponent move to our board
-        var moveFile = fs.readFileSync('./move_file', {
-            encoding: 'utf8', flag: 'r'
-        });
-        var opponentMove = moveFile.split(" ");
-        var currentLocalBoard = opponentMove[opponentMove.length - 2];
-        var mostRecentMove = opponentMove[opponentMove.length - 1];
-        globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), false);
-
-        // Calls JS function to use our AI
-        var boardToPlay = mostRecentMove;
-        console.log("HERE: " + globalBoard);
-        var result = game(process.argv[2], globalBoard, boardToPlay, false);
-        var ourLocalBoard = result.substring(result.length - 3, result.length - 2);
-        var ourRecentMove = result.substring(result.length - 1, result.length);
-        // send result to the move_file myself (have it just return numbers)
-        console.log("MOVE: " + ourLocalBoard + "  " + ourRecentMove)
-        globalBoard = updateBoard(globalBoard, ourLocalBoard, ourRecentMove, true);
-
-        // Write our move to the Urinetown .go file
-
-        //var file = open('move_file', "r");
-        //file.seek(0);
-        //file.write(result);  // whatever your move is...
-        //file.truncate();
-        //file.close();
-        writeFile(result);
+        else if (firstFourMoves && await checkFileExists(process.argv[2] + ".go")) {
+            var moveFile = fs.readFileSync('./move_file', {
+                encoding: 'utf8', flag: 'r'
+            });
+            if (moveFile !== "") {
+                var opponentMove = moveFile.split(" ");
+                var currentLocalBoard = opponentMove[opponentMove.length - 2];
+                var mostRecentMove = opponentMove[opponentMove.length - 1];
+                if (!isNaN(parseInt(currentLocalBoard))) {
+                    globalBoard = updateBoard(globalBoard, parseInt(currentLocalBoard), parseInt(mostRecentMove), true);
+                }
+            } else {
+                mostRecentMove = mRM;
+            }
+            var boardToPlay = mostRecentMove;
+            var result = algorithm(process.argv[2], globalBoard, boardToPlay);
+            var ourLocalBoard = result.substring(result.length - 3, result.length - 2);
+            var ourRecentMove = result.substring(result.length - 1, result.length);
+            globalBoard = updateBoard(globalBoard, ourLocalBoard, ourRecentMove, false);
+            writeFile(result);
+            await new Promise(resolve => setTimeout(resolve, 900));
+        }
     }
 }
 
@@ -147,13 +135,13 @@ function computeWinOrLoss(localBoard) {
     if (localBoard[0] + localBoard[1] + localBoard[2] === winVal * 3 || localBoard[3] + localBoard[4] + localBoard[5] === winVal * 3 || localBoard[6] + localBoard[7] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[3] + localBoard[6] === winVal * 3 || localBoard[1] + localBoard[4] + localBoard[7] === winVal * 3 ||
         localBoard[2] + localBoard[5] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[4] + localBoard[8] === winVal * 3 || localBoard[2] + localBoard[4] + localBoard[6] === winVal * 3) {
         return winVal;
-    } else if (localBoard[0] + localBoard[1] + localBoard[2] === winVal * 3 || localBoard[3] + localBoard[4] + localBoard[5] === winVal * 3 || localBoard[6] + localBoard[7] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[3] + localBoard[6] === winVal * 3 || localBoard[1] + localBoard[4] + localBoard[7] === winVal * 3 ||
-        localBoard[2] + localBoard[5] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[4] + localBoard[8] === winVal * 3 || localBoard[2] + localBoard[4] + localBoard[6] === winVal * 3) {
-        winVal = -1;
-        return winVal;
-    } else {
-        return 0;
     }
+    winVal = -1;
+    if (localBoard[0] + localBoard[1] + localBoard[2] === winVal * 3 || localBoard[3] + localBoard[4] + localBoard[5] === winVal * 3 || localBoard[6] + localBoard[7] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[3] + localBoard[6] === winVal * 3 || localBoard[1] + localBoard[4] + localBoard[7] === winVal * 3 ||
+        localBoard[2] + localBoard[5] + localBoard[8] === winVal * 3 || localBoard[0] + localBoard[4] + localBoard[8] === winVal * 3 || localBoard[2] + localBoard[4] + localBoard[6] === winVal * 3) {
+        return winVal;
+    }
+    return 0;
 }
 
 /**
@@ -369,36 +357,9 @@ function realEvaluateSquare(possLocalBoard) {
  * @param {string} playerName the name of the player
  * @param {object} smallBoards the 2d array of all the small boards (the Global Board)
  * @param {number} currBoard the number of the current board to play on (0-8)
- * @param {boolean} pyScript whether this funciton was called from pyscript
  * @returns {string} the message to write to the text file, in format "{PlayerName} {LocalBoardNumber} {SpaceNumber}"
  */
-function game(playerName, smallBoards, currBoard, pyScript) {
-    if (pyScript) {
-        var finalBoard = Array(9).fill().map(function () { Array(9).fill(0) });
-        smallBoards = "" + smallBoards;
-        let boardCount = 0;
-        let numCount = 0;
-        for (let x = 0; x < smallBoards.length; x++) {
-            if (numCount >= 9) {
-                boardCount += 1;
-                numCount -= 9;
-            }
-            if (smallBoards.substring(x, x + 1) === "-") {
-                finalBoard[boardCount][numCount] = smallBoards.substring(x, x + 2);
-                x += 1;
-                numCount += 1;
-            } else if (smallBoards.substring(x, x + 1) === "0" || smallBoards.substring(x, x + 1) === "1") { // checking for 0 or 1
-                finalBoard[boardCount][numCount] = smallBoards.substring(x, x + 1);
-                numCount += 1;
-            }
-        }
-        for (let x = 0; x < 9; x++) {
-            for (let y = 0; y < 9; y++) {
-                finalBoard[x][y] = +finalBoard[x][y];
-            }
-        }
-        smallBoards = finalBoard;
-    }
+function algorithm(playerName, smallBoards, currBoard) {
     var currentBoard = currBoard;
     topMove = -1;
     topScore = [-Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity, -Infinity];
@@ -408,7 +369,10 @@ function game(playerName, smallBoards, currBoard, pyScript) {
             smallBoards[index].forEach(function (param) { param === 0 && count++ });
         }
     }
-    if (computeWinOrLoss(smallBoards[currentBoard]) !== 0 || currentBoard === -1) {
+    if (mainBoard[currentBoard] !== 0 || !smallBoards[currentBoard].includes(0)) {
+        currentBoard = -1;
+    }
+    if (currentBoard === -1 || computeWinOrLoss(smallBoards[currentBoard]) !== 0) {
         var cachedMiniMax;
         if (MOVES < 10) {
             cachedMiniMax = minimax(smallBoards, -1, Math.min(4, count), -Infinity, Infinity, true);
@@ -459,5 +423,18 @@ function game(playerName, smallBoards, currBoard, pyScript) {
             smallBoards[currentBoard][topMove] = computerVal;
         }
     }
+
+    for (var index in smallBoards) {
+        if (mainBoard[index] === 0) {
+            if (computeWinOrLoss(smallBoards[index]) !== 0) {
+                mainBoard[index] = computeWinOrLoss(smallBoards[index]);
+            }
+        }
+    }
     return (playerName + " " + currentBoard + " " + topMove);
 }
+
+/**
+ * @summary Running our AI!
+ */
+play();
